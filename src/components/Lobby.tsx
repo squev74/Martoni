@@ -116,7 +116,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                     </div>
                   </div>
                   {p.isHost && (
-                    <Crown className="w-4 h-4 text-amber-400 shrink-0" title="Hôte" />
+                    <Crown className="w-4 h-4 text-amber-400 shrink-0" />
                   )}
                 </div>
               );

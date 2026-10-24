@@ -74,7 +74,7 @@ export const RevealScreen: React.FC<RevealScreenProps> = ({
     const timerB = setTimeout(() => {
       setSubPhase((prev) => {
         if (PHASE_ORDER[prev] < 2) {
-          soundEngine.playPop(520);
+          soundEngine.playPop();
           return 'B';
         }
         return prev;
@@ -84,7 +84,7 @@ export const RevealScreen: React.FC<RevealScreenProps> = ({
     const timerC = setTimeout(() => {
       setSubPhase((prev) => {
         if (PHASE_ORDER[prev] < 3) {
-          soundEngine.playPop(620);
+          soundEngine.playPop();
           return 'C';
         }
         return prev;

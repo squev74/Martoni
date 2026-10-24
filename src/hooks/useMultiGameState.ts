@@ -1,12 +1,12 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { ref, update, set, get, onValue, off } from 'firebase/database';
-import { db } from '../services/firebase';
-import { Room, MultiAnswerCard, MultiPlayer } from '../types/multi';
-import questionsData from '../data/questions.json';
-import { Question } from '../types/game';
-import { generateAiAnswers } from '../services/geminiService';
-import { areAnswersSimilar, normalizeDisplayAnswer, normalizeText, polishFallbackUserAnswer } from '../utils/answerMatcher';
-import { audioManager } from '../utils/audioManager';
+import { doc, setDoc, getDoc, updateDoc, onSnapshot } from 'firebase/firestore';
+import { db } from '@/src/services/firebase';
+import { Room, MultiAnswerCard, MultiPlayer } from '@/src/types/multi';
+import questionsData from '@/src/data/questions.json';
+import { Question } from '@/src/types/game';
+import { generateAiAnswers } from '@/src/services/geminiService';
+import { areAnswersSimilar, normalizeDisplayAnswer } from '@/src/utils/answerMatcher';
+import { audioManager } from '@/src/utils/audioManager';
 
 function shuffleArray<T>(items: T[]): T[] {
   const copy = [...items];
@@ -29,21 +29,29 @@ export function useMultiGameState(roomCode: string, playerId: string) {
   useEffect(() => {
     if (!roomCode) return;
     const cleanCode = roomCode.trim().toUpperCase();
-    const roomRef = ref(db, `rooms/${cleanCode}`);
+    const roomRef = doc(db, 'rooms', cleanCode);
 
-    const unsubscribe = onValue(roomRef, (snapshot) => {
-      if (snapshot.exists()) {
-        const data = snapshot.val() as Room;
-        setRoom(data);
-        setLoading(false);
-      } else {
-        setRoom(null);
+    const unsubscribe = onSnapshot(
+      roomRef,
+      (docSnap) => {
+        if (docSnap.exists()) {
+          const data = docSnap.data() as Room;
+          setRoom(data);
+          setLoading(false);
+        } else {
+          setRoom(null);
+          setLoading(false);
+        }
+      },
+      () => {
         setLoading(false);
       }
-    });
+    );
 
     return () => {
-      off(roomRef);
+      try {
+        unsubscribe();
+      } catch {}
     };
   }, [roomCode]);
 
@@ -89,13 +97,14 @@ export function useMultiGameState(roomCode: string, playerId: string) {
         explanation: q.explanation || 'Explication officielle non disponible.',
       };
 
-      update(ref(db, `rooms/${room.code}`), {
+      const roomRef = doc(db, 'rooms', room.code);
+      updateDoc(roomRef, {
         question: questionPayload,
         submissions: {},
         cards: {},
         votes: {},
         scoreBreakdowns: {},
-      });
+      }).catch(() => {});
     }
   }, [room?.state, isHost, room?.currentQuestionIndex]);
 
@@ -103,7 +112,17 @@ export function useMultiGameState(roomCode: string, playerId: string) {
   const submitAnswer = useCallback(async (text: string) => {
     if (!room || !text.trim()) return;
     const cleanCode = room.code;
-    await set(ref(db, `rooms/${cleanCode}/submissions/${playerId}`), text.trim());
+    const roomRef = doc(db, 'rooms', cleanCode);
+    try {
+      await updateDoc(roomRef, {
+        [`submissions.${playerId}`]: text.trim(),
+      });
+    } catch {
+      const updated = { ...room };
+      if (!updated.submissions) updated.submissions = {};
+      updated.submissions[playerId] = text.trim();
+      await setDoc(roomRef, updated);
+    }
     audioManager.playSFX('question_pop');
   }, [room, playerId]);
 
@@ -204,9 +223,13 @@ export function useMultiGameState(roomCode: string, playerId: string) {
           finalCardsMap[c.id] = c;
         });
 
-        await update(ref(db, `rooms/${room.code}`), {
+        const roomRef = doc(db, 'rooms', room.code);
+        await updateDoc(roomRef, {
           cards: finalCardsMap,
           state: 'VOTE',
+        }).catch(async () => {
+          const updated = { ...room, cards: finalCardsMap, state: 'VOTE' as const };
+          await setDoc(roomRef, updated);
         });
       };
 
@@ -218,7 +241,17 @@ export function useMultiGameState(roomCode: string, playerId: string) {
   const submitVote = useCallback(async (cardId: string) => {
     if (!room || room.state !== 'VOTE') return;
     const cleanCode = room.code;
-    await set(ref(db, `rooms/${cleanCode}/votes/${playerId}`), cardId);
+    const roomRef = doc(db, 'rooms', cleanCode);
+    try {
+      await updateDoc(roomRef, {
+        [`votes.${playerId}`]: cardId,
+      });
+    } catch {
+      const updated = { ...room };
+      if (!updated.votes) updated.votes = {};
+      updated.votes[playerId] = cardId;
+      await setDoc(roomRef, updated);
+    }
     audioManager.playSFX('question_pop');
   }, [room, playerId]);
 
@@ -281,6 +314,7 @@ export function useMultiGameState(roomCode: string, playerId: string) {
 
         const scoreBreakdowns: Record<string, any> = {};
         const playerUpdates: Record<string, number> = {};
+        const newPlayers = { ...room.players };
 
         playersList.forEach((p) => {
           const votedCardId = completeVotes[p.id];
@@ -311,15 +345,30 @@ export function useMultiGameState(roomCode: string, playerId: string) {
             fooledPlayerIds,
           };
 
-          playerUpdates[`players/${p.id}/score`] = (p.score || 0) + totalRoundPoints;
+          const newScore = (newPlayers[p.id]?.score || 0) + totalRoundPoints;
+          if (newPlayers[p.id]) {
+            newPlayers[p.id].score = newScore;
+          }
+          playerUpdates[`players.${p.id}.score`] = newScore;
         });
 
-        await update(ref(db, `rooms/${room.code}`), {
+        const roomRef = doc(db, 'rooms', room.code);
+        await updateDoc(roomRef, {
           votes: completeVotes,
           cards: updatedCardsMap,
           scoreBreakdowns,
           state: 'REVEAL',
-          ...playerUpdates,
+          players: newPlayers,
+        }).catch(async () => {
+          const updated = {
+            ...room,
+            votes: completeVotes,
+            cards: updatedCardsMap,
+            scoreBreakdowns,
+            state: 'REVEAL' as const,
+            players: newPlayers,
+          };
+          await setDoc(roomRef, updated);
         });
 
         audioManager.playSFX('correct_answer');
@@ -334,8 +383,9 @@ export function useMultiGameState(roomCode: string, playerId: string) {
     const nextRound = (room.currentRound || 1) + 1;
     const totalRounds = room.totalRounds || 4;
 
+    const roomRef = doc(db, 'rooms', room.code);
     if (nextRound <= totalRounds) {
-      await update(ref(db, `rooms/${room.code}`), {
+      await updateDoc(roomRef, {
         currentRound: nextRound,
         currentQuestionIndex: (room.currentQuestionIndex || 0) + 1,
         state: 'QUESTION',
@@ -344,11 +394,27 @@ export function useMultiGameState(roomCode: string, playerId: string) {
         cards: null,
         votes: null,
         scoreBreakdowns: null,
+      }).catch(async () => {
+        const updated = {
+          ...room,
+          currentRound: nextRound,
+          currentQuestionIndex: (room.currentQuestionIndex || 0) + 1,
+          state: 'QUESTION' as const,
+          question: undefined,
+          submissions: undefined,
+          cards: undefined,
+          votes: undefined,
+          scoreBreakdowns: undefined,
+        };
+        await setDoc(roomRef, updated);
       });
       audioManager.playSFX('question_pop');
     } else {
-      await update(ref(db, `rooms/${room.code}`), {
+      await updateDoc(roomRef, {
         state: 'ENDED',
+      }).catch(async () => {
+        const updated = { ...room, state: 'ENDED' as const };
+        await setDoc(roomRef, updated);
       });
       audioManager.playSFX('game_over');
     }

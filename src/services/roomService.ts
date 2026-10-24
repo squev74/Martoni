@@ -1,11 +1,10 @@
-import { ref, set, get, update, onValue, off, remove } from 'firebase/database';
+import { doc, setDoc, getDoc, updateDoc, deleteDoc, onSnapshot } from 'firebase/firestore';
 import { db } from './firebase';
 import { Room, MultiPlayer, RoomState } from '../types/multi';
 
 const CHANNEL_NAME = 'jeu_de_bluff_multi_sync';
 const broadcastChannel = typeof window !== 'undefined' && 'BroadcastChannel' in window ? new BroadcastChannel(CHANNEL_NAME) : null;
 
-// Generate random 4-letter code (e.g. "X7BK")
 function generateRoomCode(): string {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   let code = '';
@@ -15,7 +14,6 @@ function generateRoomCode(): string {
   return code;
 }
 
-// LocalStorage helpers for resilient fallback
 function getLocalRooms(): Record<string, Room> {
   if (typeof window === 'undefined') return {};
   try {
@@ -68,15 +66,14 @@ export async function createRoom(
     createdAt: Date.now(),
   };
 
-  // Try saving to Firebase with a strict 1s timeout so it never hangs if Firebase DB is unprovisioned
   try {
-    const roomRef = ref(db, `rooms/${roomCode}`);
+    const roomRef = doc(db, 'rooms', roomCode);
     await Promise.race([
-      set(roomRef, newRoom),
-      new Promise((_, reject) => setTimeout(() => reject(new Error('Firebase timeout')), 1000)),
+      setDoc(roomRef, newRoom),
+      new Promise((_, reject) => setTimeout(() => reject(new Error('Firebase timeout')), 1500)),
     ]);
   } catch {
-    // Fallback immediately to local storage
+    // Fallback
   }
 
   saveLocalRoom(newRoom);
@@ -91,13 +88,13 @@ export async function joinRoom(
   let room: Room | null = null;
 
   try {
-    const roomRef = ref(db, `rooms/${cleanCode}`);
-    const snapshot = await Promise.race([
-      get(roomRef),
-      new Promise((_, reject) => setTimeout(() => reject(new Error('Firebase timeout')), 1000)),
+    const roomRef = doc(db, 'rooms', cleanCode);
+    const snap = await Promise.race([
+      getDoc(roomRef),
+      new Promise((_, reject) => setTimeout(() => reject(new Error('Firebase timeout')), 1500)),
     ]) as any;
-    if (snapshot && snapshot.exists()) {
-      room = snapshot.val() as Room;
+    if (snap && snap.exists()) {
+      room = snap.data() as Room;
     }
   } catch {}
 
@@ -131,10 +128,10 @@ export async function joinRoom(
   }
 
   try {
-    const roomRef = ref(db, `rooms/${cleanCode}`);
+    const roomRef = doc(db, 'rooms', cleanCode);
     await Promise.race([
-      set(roomRef, room),
-      new Promise((_, reject) => setTimeout(() => reject(new Error('Firebase timeout')), 1000)),
+      setDoc(roomRef, room),
+      new Promise((_, reject) => setTimeout(() => reject(new Error('Firebase timeout')), 1500)),
     ]);
   } catch {}
 
@@ -147,12 +144,12 @@ export async function updateRoomState(roomCode: string, state: RoomState): Promi
   
   let room: Room | null = null;
   try {
-    const roomRef = ref(db, `rooms/${cleanCode}`);
+    const roomRef = doc(db, 'rooms', cleanCode);
     const snap = await Promise.race([
-      get(roomRef),
-      new Promise((_, reject) => setTimeout(() => reject(new Error('Firebase timeout')), 1000)),
+      getDoc(roomRef),
+      new Promise((_, reject) => setTimeout(() => reject(new Error('Firebase timeout')), 1500)),
     ]) as any;
-    if (snap && snap.exists()) room = snap.val() as Room;
+    if (snap && snap.exists()) room = snap.data() as Room;
   } catch {}
 
   if (!room) {
@@ -178,10 +175,10 @@ export async function updateRoomState(roomCode: string, state: RoomState): Promi
     }
 
     try {
-      const roomRef = ref(db, `rooms/${cleanCode}`);
+      const roomRef = doc(db, 'rooms', cleanCode);
       await Promise.race([
-        set(roomRef, room),
-        new Promise((_, reject) => setTimeout(() => reject(new Error('Firebase timeout')), 1000)),
+        setDoc(roomRef, room),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Firebase timeout')), 1500)),
       ]);
     } catch {}
 
@@ -191,18 +188,14 @@ export async function updateRoomState(roomCode: string, state: RoomState): Promi
 
 export async function leaveRoom(roomCode: string, playerId: string): Promise<void> {
   const cleanCode = roomCode.trim().toUpperCase();
-  try {
-    const playerRef = ref(db, `rooms/${cleanCode}/players/${playerId}`);
-    await Promise.race([
-      remove(playerRef),
-      new Promise((_, reject) => setTimeout(() => reject(new Error('Firebase timeout')), 1000)),
-    ]);
-  } catch {}
-
   const localRooms = getLocalRooms();
   if (localRooms[cleanCode] && localRooms[cleanCode].players) {
     delete localRooms[cleanCode].players[playerId];
     saveLocalRoom(localRooms[cleanCode]);
+    try {
+      const roomRef = doc(db, 'rooms', cleanCode);
+      await setDoc(roomRef, localRooms[cleanCode]);
+    } catch {}
   }
 }
 
@@ -211,20 +204,23 @@ export function subscribeToRoom(
   callback: (room: Room | null) => void
 ): () => void {
   const cleanCode = roomCode.trim().toUpperCase();
-  const roomRef = ref(db, `rooms/${cleanCode}`);
+  const roomRef = doc(db, 'rooms', cleanCode);
 
   const localRooms = getLocalRooms();
   if (localRooms[cleanCode]) {
     callback(localRooms[cleanCode]);
   }
 
-  const unsubscribeFirebase = onValue(
+  const unsubscribeFirebase = onSnapshot(
     roomRef,
-    (snapshot) => {
-      if (snapshot.exists()) {
-        const val = snapshot.val() as Room;
+    (docSnap) => {
+      if (docSnap.exists()) {
+        const val = docSnap.data() as Room;
         saveLocalRoom(val);
         callback(val);
+      } else {
+        const local = getLocalRooms();
+        callback(local[cleanCode] || null);
       }
     },
     () => {
@@ -249,7 +245,7 @@ export function subscribeToRoom(
 
   return () => {
     try {
-      off(roomRef);
+      unsubscribeFirebase();
     } catch {}
     if (broadcastChannel && bcHandler) {
       broadcastChannel.removeEventListener('message', bcHandler);

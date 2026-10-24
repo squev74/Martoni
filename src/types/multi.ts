@@ -12,6 +12,7 @@ export interface MultiAnswerCard {
   id: string;
   text: string;
   authorId?: string;
+  authorIds?: string[];
   isTruth?: boolean;
   voters?: Record<string, boolean>; // playerId -> true
 }
@@ -36,5 +37,6 @@ export interface Room {
   submissions?: Record<string, string>; // playerId -> answer text
   cards?: Record<string, MultiAnswerCard>;
   votes?: Record<string, string>; // playerId -> cardId
+  scoreBreakdowns?: Record<string, any>;
   createdAt: number;
 }
