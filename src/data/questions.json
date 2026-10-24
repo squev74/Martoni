@@ -1,0 +1,602 @@
+[
+  {
+    "id": "q001",
+    "category": "Histoire de Paris",
+    "question": "En 1923, qu'a acheté la ville de Paris pour lutter contre les rats ?",
+    "truth": "Des furets de chasse",
+    "correctAnswer": "Des furets de chasse",
+    "explanation": "La municipalité avait engagé une brigade de furets pour traquer les rongeurs dans les égouts et les galeries souterraines de la capitale.",
+    "aiBluffs": {
+      "farfelu": [
+        "Trois cents hiboux retraités du cirque d'Hiver",
+        "Des automates mécaniques jouant de la flûte traversière",
+        "Un stock de gruyère piégé à la moutarde de Dijon"
+      ],
+      "ruse": [
+        "Une brigade de chiens terriers importés du Yorkshire",
+        "Des diffuseurs de vapeur de soufre pour les bouches d'égout",
+        "Deux mille chats errants recensés par la préfecture"
+      ],
+      "manipulateur": [
+        "Le brevet du piège électromagnétique de l'ingénieur Belin",
+        "Quatorze tonnes de poudre d'arsenic colorée en bleu",
+        "Une prime municipale de 25 centimes par queue de rat rapportée"
+      ]
+    },
+    "samplePlayerSuggestions": [
+      "Deux mille chats de gouttière",
+      "Une brigade de chiens ratiers",
+      "Des pièges mécaniques à ressort"
+    ]
+  },
+  {
+    "id": "q002",
+    "category": "Histoire insolite",
+    "question": "En 1932, quelle menace inattendue l'armée australienne a-t-elle officiellement combattue avec des mitrailleuses Lewis, avant de déclarer forfait ?",
+    "truth": "Une horde de 20 000 émeus sauvages",
+    "correctAnswer": "Une horde de 20 000 émeus sauvages",
+    "explanation": "Connue sous le nom de « Guerre des Émeus », cette opération militaire visait à protéger les récoltes de blé en Australie-Occidentale. Les oiseaux se sont avérés si rapides et résistants que l'armée s'est retirée après six jours.",
+    "aiBluffs": {
+      "farfelu": [
+        "Une invasion de kangourous boxeurs syndiqués",
+        "Un nuage géant de perroquets kleptomanes",
+        "Une révolte de moutons mérinos hypnotisés"
+      ],
+      "ruse": [
+        "Une prolifération de dromadaires sauvages dans l'Outback",
+        "Un essaim géant de criquets pèlerins du désert",
+        "Une colonie de dingos attaquant les voies ferrées"
+      ],
+      "manipulateur": [
+        "Des contrebandiers de perles armés de canons côtiers",
+        "Une meute de 4 500 buffles d'eau importés d'Asie",
+        "Des millions de lapins géants des plaines de Victoria"
+      ]
+    },
+    "samplePlayerSuggestions": [
+      "Des millions de crapauds buffles",
+      "Une colonie de cacatoès ravageurs",
+      "Une prolifération de dromadaires sauvages dans l'Outback"
+    ]
+  },
+  {
+    "id": "q003",
+    "category": "Législation bizarre",
+    "question": "Dans la ville de Châteauneuf-du-Pape, quel décret municipal insolite adopté en 1954 est toujours techniquement en vigueur aujourd'hui ?",
+    "truth": "L'interdiction de survol et d'atterrissage des soucoupes volantes",
+    "correctAnswer": "L'interdiction de survol et d'atterrissage des soucoupes volantes",
+    "explanation": "Le maire Lucien Jeune a pris cet arrêté municipal en 1954 en pleine vague d'observations d'OVNI en France. Tout « cigare volant » atterrissant sur la commune doit être immédiatement mis en fourrière.",
+    "aiBluffs": {
+      "farfelu": [
+        "L'obligation de saluer chaque tonneau de vin avec son chapeau",
+        "L'interdiction aux escargots de traverser la route le dimanche",
+        "L'obligation pour les pigeons de porter une bague tricolore"
+      ],
+      "ruse": [
+        "L'interdiction de prononcer le mot « Bordeaux » dans les caves",
+        "L'obligation de vendanger uniquement à la lueur des lanternes",
+        "L'interdiction de mélanger de l'eau au vin sous peine d'amende"
+      ],
+      "manipulateur": [
+        "L'interdiction aux facteurs de boire plus de deux verres par tournée",
+        "Le droit de payer ses impôts locaux en bouteilles millésimées",
+        "L'interdiction de siffler à moins de 50 mètres des chais"
+      ]
+    },
+    "samplePlayerSuggestions": [
+      "L'interdiction de vendre du vin en bouteille carrée",
+      "L'interdiction de prononcer le mot « Bordeaux » dans les caves",
+      "L'obligation d'offrir un verre aux gendarmes le 14 juillet"
+    ]
+  },
+  {
+    "id": "q004",
+    "category": "Nature & Sciences",
+    "question": "Quelle particularité anatomique unique dans le règne animal possède le wombat d'Australie pour marquer son territoire sans que cela ne roule ?",
+    "truth": "Il produit des crottes de forme cubique",
+    "correctAnswer": "Il produit des crottes de forme cubique",
+    "explanation": "Grâce à l'élasticité variable des parois de son intestin, le wombat façonne jusqu'à 100 petits cubes par nuit, qu'il empile sur des rochers ou des troncs pour signaler sa présence sans qu'ils ne dévalent la pente.",
+    "aiBluffs": {
+      "farfelu": [
+        "Il éternue de la mousse phosphorescente sur les arbres",
+        "Il possède une troisième oreille cachée sous la queue",
+        "Il chante en canon avec son propre écho dans son terrier"
+      ],
+      "ruse": [
+        "Il sécrète une résine collante sous ses coussinets plantaires",
+        "Il creuse des sillons géométriques en spirale autour de son nid",
+        "Il laisse des empreintes parfumées à l'eucalyptus sur les pierres"
+      ],
+      "manipulateur": [
+        "Il empile des cailloux plats enduits de salive odorante",
+        "Il possède une glande dorsale qui teinte l'écorce en rouge",
+        "Il aplatit la terre avec son postérieur cartilagineux blindé"
+      ]
+    },
+    "samplePlayerSuggestions": [
+      "Il fait des crottes cubiques",
+      "Il sécrète une colle naturelle sur les rochers",
+      "Il empile des cailloux plats enduits de salive odorante"
+    ]
+  },
+  {
+    "id": "q005",
+    "category": "Sport & Olympisme",
+    "question": "Lors des Jeux Olympiques de Paris en 1900, quelle épreuve officielle de tir (heureusement disputée une seule fois dans l'histoire) figurait au programme ?",
+    "truth": "Le tir aux pigeons vivants",
+    "correctAnswer": "Le tir aux pigeons vivants",
+    "explanation": "Près de 300 pigeons ont été lâchés devant les tireurs au Bois de Boulogne. Le Belge Léon de Lunden a remporté l'épreuve avec 21 oiseaux abattus, avant que les pigeons d'argile ne deviennent la norme dès 1904.",
+    "aiBluffs": {
+      "farfelu": [
+        "Le tir au pistolet sur des fromages roulants",
+        "Le duel au pistolet à billes de cire entre arbitres",
+        "Le tir au canon de fête foraine sur chapeaux hauts-de-forme"
+      ],
+      "ruse": [
+        "Le tir de précision depuis la nacelle d'une montgolfière",
+        "Le tir à la carabine sur des bouteilles flottant sur la Seine",
+        "Le tir au pistolet les yeux bandés au son d'une cloche"
+      ],
+      "manipulateur": [
+        "Le tir rapide sur 12 silhouettes mécaniques à vapeur",
+        "Le tir d'élite à cheval au galop sur cibles mouvantes",
+        "Le lancer de javelot enflammé sur des cibles de paille"
+      ]
+    },
+    "samplePlayerSuggestions": [
+      "Le tir de précision depuis la nacelle d'une montgolfière",
+      "Le duel au pistolet à balles de cire",
+      "Le tir sur pommes posées sur des mannequins"
+    ]
+  },
+  {
+    "id": "q006",
+    "category": "Inventions du quotidien",
+    "question": "Quel était l'usage initial de la pâte à modeler Play-Doh lors de sa commercialisation dans les années 1930 aux États-Unis ?",
+    "truth": "Un produit nettoyant pour détacher le papier peint",
+    "correctAnswer": "Un produit nettoyant pour détacher le papier peint",
+    "explanation": "Inventée par Noah et Joseph McVicker sous le nom de Kutol, cette pâte non toxique servait à retirer la suie des poêles à charbon sur les papiers peints avant d'être adoptée par les écoles maternelles en 1955.",
+    "aiBluffs": {
+      "farfelu": [
+        "Un chewing-gum géant sans goût pour muscler la mâchoire",
+        "Un isolant thermique pour les chaussettes des mineurs",
+        "Un coussin anti-vibrations pour les dentiers en porcelaine"
+      ],
+      "ruse": [
+        "Un mastic d'étanchéité pour les hublots de sous-marins",
+        "Une pâte d'empreinte dentaire parfumée à l'amande douce",
+        "Un enduit souple pour réparer les chambres à air de vélo"
+      ],
+      "manipulateur": [
+        "Une pâte de modelage chirurgicale pour prothèses médicales",
+        "Un absorbeur d'humidité pour les caisses de munitions",
+        "Un nettoyant mécanique pour les touches de machines à écrire"
+      ]
+    },
+    "samplePlayerSuggestions": [
+      "Un mastic d'étanchéité pour les fenêtres en bois",
+      "Un nettoyant mécanique pour les touches de machines à écrire",
+      "Une pâte d'empreinte pour les serruriers"
+    ]
+  },
+  {
+    "id": "q007",
+    "category": "Géographie & Diplomatie",
+    "question": "Depuis 1984, avec quelles munitions le Canada et le Danemark se sont-ils disputé pacifiquement la souveraineté de l'île Hans en Arctique jusqu'à l'accord de 2022 ?",
+    "truth": "Des bouteilles de whisky canadien et de schnaps danois",
+    "correctAnswer": "Des bouteilles de whisky canadien et de schnaps danois",
+    "explanation": "Durant cette « Guerre du Whisky », chaque fois qu'une patrouille militaire visitait le rocher inhabité, elle hissait son drapeau et laissait une bouteille d'alcool national en cadeau pour l'équipe adverse.",
+    "aiBluffs": {
+      "farfelu": [
+        "Des batailles de boules de neige homologuées par un notaire",
+        "Des sculptures de phoques en glace déposées sur la plage",
+        "Des concours annuels de tricot de pulls en laine polaire"
+      ],
+      "ruse": [
+        "Des panneaux frontaliers déplacés de dix mètres chaque été",
+        "Des boîtes de saumon fumé et de sirop d'érable scellées",
+        "Des parties d'échecs par correspondance radio entre navires"
+      ],
+      "manipulateur": [
+        "Des capsules temporelles contenant les journaux du jour",
+        "Des bornes géodésiques repeintes aux couleurs de chaque pays",
+        "Des échanges officiels de 12 pièces d'or commémoratives"
+      ]
+    },
+    "samplePlayerSuggestions": [
+      "Des boîtes de saumon fumé et de sirop d'érable scellées",
+      "Des drapeaux plantés dans des blocs de glace",
+      "Des lettres d'excuses diplomatiques humoristiques"
+    ]
+  },
+  {
+    "id": "q008",
+    "category": "Espace & Technologie",
+    "question": "En 1965, quel objet du quotidien l'astronaute John Young a-t-il introduit en contrebande à bord de la capsule Gemini 3, provoquant la colère du Congrès américain ?",
+    "truth": "Un sandwich au corned-beef sur pain de seigle",
+    "correctAnswer": "Un sandwich au corned-beef sur pain de seigle",
+    "explanation": "Acheté dans une épicerie de Cocoa Beach avant le décollage, le sandwich a commencé à s'émietter en apesanteur, menaçant de s'infiltrer dans les panneaux électriques de la capsule spatiale.",
+    "aiBluffs": {
+      "farfelu": [
+        "Un poisson rouge dans un sac plastique hermétique",
+        "Un réveil mécanique qui a sonné pendant la conférence radio",
+        "Une paire de pantoufles en fourrure d'opossum"
+      ],
+      "ruse": [
+        "Un harmonica de poche en laiton pour jouer depuis l'orbite",
+        "Une flasque de bourbon du Kentucky glissée dans sa botte",
+        "Un jeu de cartes magnétiques fabriqué dans son garage"
+      ],
+      "manipulateur": [
+        "Une balle de golf Spalding et un fer 6 démontable",
+        "Un cigare cubain destiné à célébrer l'amerrissage",
+        "Un appareil photo miniature non homologué par la NASA"
+      ]
+    },
+    "samplePlayerSuggestions": [
+      "Un harmonica de poche en laiton pour jouer depuis l'orbite",
+      "Une barre de chocolat fondue dans sa combinaison",
+      "Un jeu de dés plombés"
+    ]
+  },
+  {
+    "id": "q009",
+    "category": "Royauté & Animaux",
+    "question": "Quel grade militaire officiel détient Sir Nils Olav III, un manchot royal résidant au zoo d'Édimbourg en Écosse ?",
+    "truth": "Général de division de la Garde royale norvégienne",
+    "correctAnswer": "Général de division de la Garde royale norvégienne",
+    "explanation": "Mascotte officielle depuis 1972, Sir Nils Olav a été anobli en 2008 avec l'aval du roi Harald V de Norvège et inspecte solennellement les soldats norvégiens lors de chaque visite à Édimbourg.",
+    "aiBluffs": {
+      "farfelu": [
+        "Grand Amiral de la flotte des icebergs d'Écosse",
+        "Ministre plénipotentiaire de la banquise australe",
+        "Inspecteur en chef des harengs de Sa Majesté"
+      ],
+      "ruse": [
+        "Capitaine honoraire de la Royal Navy britannique",
+        "Gardien symbolique des clés du château d'Édimbourg",
+        "Colonel en chef du régiment des Highlanders d'Écosse"
+      ],
+      "manipulateur": [
+        "Ambassadeur perpétuel du Cercle Polaire auprès de l'ONU",
+        "Sergent-major décoré de l'Ordre du Chardon écossais",
+        "Commandant honoraire des garde-côtes de la mer du Nord"
+      ]
+    },
+    "samplePlayerSuggestions": [
+      "Colonel en chef du régiment des Highlanders d'Écosse",
+      "Capitaine honoraire de la Royal Navy britannique",
+      "Lord Protecteur du bassin arctique"
+    ]
+  },
+  {
+    "id": "q010",
+    "category": "Histoire de France",
+    "question": "En 1783, quels furent les trois tout premiers passagers vivants à voler à bord d'une montgolfière devant le roi Louis XVI à Versailles ?",
+    "truth": "Un mouton, un canard et un coq",
+    "correctAnswer": "Un mouton, un canard et un coq",
+    "explanation": "Louis XVI ayant refusé d'envoyer des condamnés à mort pour tester les effets de l'altitude, les frères Montgolfier ont embarqué un mouton (surnommé Montauciel), un canard et un coq, qui ont atterri sains et saufs après 8 minutes de vol.",
+    "aiBluffs": {
+      "farfelu": [
+        "Un bouledogue frisé, une oie blanche et une tortue",
+        "Trois perruquiers volontaires de la cour de Versailles",
+        "Une chèvre alpine, un perroquet et un lapin angora"
+      ],
+      "ruse": [
+        "Deux chiens de chasse royaux et un pigeon voyageur",
+        "Un singe capucin, un chat siamois et une colombe",
+        "Un porcelet, une poule faisane et un lapin de garenne"
+      ],
+      "manipulateur": [
+        "Le valet du physicien Pilâtre de Rozier et son épagneul",
+        "Trois faucons dressés de la vénerie royale de Louis XVI",
+        "Deux agneaux de Rambouillet et un cygne du Grand Canal"
+      ]
+    },
+    "samplePlayerSuggestions": [
+      "Deux chiens de chasse et un pigeon voyageur",
+      "Une chèvre, un chat et un coq",
+      "Trois condamnés graciés par le roi"
+    ]
+  },
+  {
+    "id": "q011",
+    "category": "Gastronomie & Histoire",
+    "question": "Au XIXe siècle aux États-Unis, sous quelle forme le ketchup était-il vendu en pharmacie par le docteur John Cook Bennett ?",
+    "truth": "En pilules médicinales contre l'indigestion et la diarrhée",
+    "correctAnswer": "En pilules médicinales contre l'indigestion et la diarrhée",
+    "explanation": "En 1834, le Dr Bennett affirmait que les tomates concentrées guérissaient les maux d'estomac, la jaunisse et les rhumatismes, déclenchant une véritable guerre des « pilules de tomate » dans les pharmacies américaines.",
+    "aiBluffs": {
+      "farfelu": [
+        "En sirop gélifié pour faire pousser les favoris et la moustache",
+        "En élixir effervescent contre le mal de mer des marins",
+        "En pastilles à sucer pour éclaircir la voix des ténors"
+      ],
+      "ruse": [
+        "En pommade cicatrisante contre les coups de soleil",
+        "En tonique ferrugineux prescrit contre l'anémie hivernale",
+        "En teinture antiseptique pour désinfecter les gencives"
+      ],
+      "manipulateur": [
+        "En poudre soluble brevetée en 1842 contre la goutte",
+        "En cataplasme chauffant pour soulager les douleurs lombaires",
+        "En flacon compte-gouttes contre les migraines ophtalmiques"
+      ]
+    },
+    "samplePlayerSuggestions": [
+      "En sirop contre la toux",
+      "En pommade contre les coups de soleil",
+      "En élixir tonique pour le sang"
+    ]
+  },
+  {
+    "id": "q012",
+    "category": "Politique & Insolite",
+    "question": "En 1967, quel candidat inattendu a remporté plus de 100 000 bulletins lors des élections municipales de São Paulo au Brésil ?",
+    "truth": "Cacareco, une femelle rhinocéros du zoo local",
+    "correctAnswer": "Cacareco, une femelle rhinocéros du zoo local",
+    "explanation": "Pour protester contre la corruption et la hausse du prix des haricots noirs, les étudiants et électeurs de São Paulo ont inscrit massivement le nom de Cacareco, un rhinocéros de 5 ans prêté par le zoo de Rio.",
+    "aiBluffs": {
+      "farfelu": [
+        "Un lampadaire cassé de l'avenue Paulista baptisé Roberto",
+        "Un perroquet amazone capable de réciter l'hymne national",
+        "Une statue en bronze de Pelé coiffée d'un chapeau de paille"
+      ],
+      "ruse": [
+        "Un chien errant adopté par la caserne des pompiers",
+        "Un personnage fictif de feuilleton radiophonique populaire",
+        "Un âne mascotte du syndicat des planteurs de café"
+      ],
+      "manipulateur": [
+        "Tião, un chimpanzé de 11 ans pensionnaire du parc municipal",
+        "Un mannequin de vitrine installé devant l'hôtel de ville",
+        "Un ballon de football dédicacé par l'équipe nationale de 1962"
+      ]
+    },
+    "samplePlayerSuggestions": [
+      "Un chimpanzé du zoo municipal",
+      "Un chien errant adopté par les pompiers",
+      "Un perroquet qui répétait des slogans"
+    ]
+  },
+  {
+    "id": "q013",
+    "category": "Guerre & Stratégie",
+    "question": "Durant la Seconde Guerre mondiale, quel projet top-secret de l'armée américaine dirigé par le psychologue B.F. Skinner visait à guider les missiles vers leur cible ?",
+    "truth": "Des pigeons vivants dressés à picorer un écran dans le cône du missile",
+    "correctAnswer": "Des pigeons vivants dressés à picorer un écran dans le cône du missile",
+    "explanation": "Baptisé « Projet Pigeon », ce programme utilisait trois pigeons placés devant une lentille projetant l'image du navire ennemi : chaque coup de bec sur l'image ajustait les câbles de direction du missile.",
+    "aiBluffs": {
+      "farfelu": [
+        "Des chauves-souris équipées de mini-boussoles phosphorescentes",
+        "Des écureuils courant dans une roue gyroscopique stabilisatrice",
+        "Un aimant géant accordé sur la fréquence des klaxons de navires"
+      ],
+      "ruse": [
+        "Des ondes acoustiques calquées sur le chant des baleines",
+        "Des ballons sondes reliés par un fil de cuivre invisible",
+        "Un système de miroirs solaires réfléchis depuis un sous-marin"
+      ],
+      "manipulateur": [
+        "Le gyroscope magnétique Halvorsen refroidi à l'azote liquide",
+        "Des mouettes dressées à se poser sur les périscopes ennemis",
+        "Un capteur infrarouge attiré par la fumée des cheminées de cuirassés"
+      ]
+    },
+    "samplePlayerSuggestions": [
+      "Des chauves-souris dressées par l'armée",
+      "Un système de miroirs solaires",
+      "Des mouettes attirées par les navires"
+    ]
+  },
+  {
+    "id": "q014",
+    "category": "Traditions & Lois",
+    "question": "En Suisse, que stipule la loi fédérale sur la protection des animaux concernant la détention d'un cochon d'Inde à domicile ?",
+    "truth": "Il est illégal d'en posséder un seul, car c'est un animal social",
+    "correctAnswer": "Il est illégal d'en posséder un seul, car c'est un animal social",
+    "explanation": "Depuis 2008, la législation suisse interdit de détenir un cochon d'Inde (ou une perruche) en solitaire. Il existe même des agences suisses spécialisées dans la « location de cochon d'Inde de compagnie » lorsqu'un membre d'un duo décède.",
+    "aiBluffs": {
+      "farfelu": [
+        "Il est interdit de le laisser couiner après 22 heures le dimanche",
+        "Il doit obligatoirement disposer d'une roue homologuée en bois suisse",
+        "Il faut lui déclarer un prénom officiel à la mairie du canton"
+      ],
+      "ruse": [
+        "Sa cage doit obligatoirement être orientée vers une fenêtre naturelle",
+        "Il est obligatoire de lui fournir au moins 100 grammes de foin alpin par jour",
+        "Son propriétaire doit suivre une formation civique de deux heures"
+      ],
+      "manipulateur": [
+        "Il doit être enregistré auprès du vétérinaire cantonal avec une puce de 3 grammes",
+        "Il est interdit de le transporter en train sans billet demi-tarif",
+        "La surface minimale de son enclos est fixée par décret à 2,4 mètres carrés"
+      ]
+    },
+    "samplePlayerSuggestions": [
+      "Il est interdit de le faire couiner après 22 heures",
+      "Il faut suivre une formation obligatoire de deux heures",
+      "Sa cage doit faire au moins deux mètres carrés"
+    ]
+  },
+  {
+    "id": "q015",
+    "category": "Sciences & Médecine",
+    "question": "Pour quelle découverte improbable l'équipe du biologiste Magnus Wahlberg a-t-elle reçu le prix Ig-Nobel de biologie en 2004 ?",
+    "truth": "Les harengs communiquent entre eux la nuit en faisant des pets",
+    "correctAnswer": "Les harengs communiquent entre eux la nuit en faisant des pets",
+    "explanation": "Les chercheurs suédois et écossais ont découvert que les harengs expulsent des bulles de gaz par l'anus pour produire des cliquetis à haute fréquence (baptisés FRT : Fast Repetitive Tick), leur permettant de rester groupés dans l'obscurité.",
+    "aiBluffs": {
+      "farfelu": [
+        "Les escargots de Bourgogne dorment toujours la tête orientée vers le nord",
+        "Les vaches produisent 12 % de lait en plus en écoutant du Mozart",
+        "Les moustiques préfèrent piquer les amateurs de fromage bleu"
+      ],
+      "ruse": [
+        "Les saumons reconnaissent leur rivière natale grâce au champ magnétique terrestre",
+        "Les homards changent de pince dominante tous les trois ans lors de la mue",
+        "Les corbeaux sont capables de distinguer les visages des facteurs"
+      ],
+      "manipulateur": [
+        "Les morues de la mer Baltique possèdent un accent acoustique régional",
+        "Les méduses lunaires nagent en sens inverse des aiguilles d'une montre dans l'hémisphère Sud",
+        "Les étoiles de mer régénèrent leurs bras deux fois plus vite sous lumière rouge"
+      ]
+    },
+    "samplePlayerSuggestions": [
+      "Les vaches donnent plus de lait en écoutant de la musique classique",
+      "Les poissons ont un accent régional selon la mer",
+      "Les moustiques sont attirés par le fromage"
+    ]
+  },
+  {
+    "id": "q016",
+    "category": "Histoire & Architecture",
+    "question": "À Londres en 1814, quelle catastrophe surréaliste a détruit plusieurs maisons du quartier de St Giles et causé la mort de huit personnes ?",
+    "truth": "Une vague géante de 1,4 million de litres de bière brune",
+    "correctAnswer": "Une vague géante de 1,4 million de litres de bière brune",
+    "explanation": "Une cuve géante de 6 mètres de haut de la brasserie Meux & Co a explosé sous la pression, déclenchant par effet domino la rupture des cuves voisines et submergeant les rues sous un tsunami de bière Porter de 4 mètres de haut.",
+    "aiBluffs": {
+      "farfelu": [
+        "L'effondrement d'un entrepôt de quarante mille parapluies ouverts",
+        "Une avalanche de barils de moutarde anglaise en ébullition",
+        "L'envol incontrôlé d'un chapiteau de cirque rempli d'éléphants"
+      ],
+      "ruse": [
+        "La rupture d'un réservoir souterrain de mélasse de canne à sucre",
+        "L'explosion d'une fabrique royale de feux d'artifice sur la Tamise",
+        "Une coulée de suif fondu échappée d'une manufacture de chandelles"
+      ],
+      "manipulateur": [
+        "L'affaissement de 300 tonnes de meules de fromage Cheddar dans les caves",
+        "Une fuite massive de gaz d'éclairage liquéfié dans le réseau victorien",
+        "Le déraillement d'un convoi de 18 wagons de charbon en haut d'une colline"
+      ]
+    },
+    "samplePlayerSuggestions": [
+      "Une coulée géante de mélasse chaude",
+      "Une explosion dans une usine de feux d'artifice",
+      "Une avalanche de tonneaux de whisky"
+    ]
+  },
+  {
+    "id": "q017",
+    "category": "Record & Aviation",
+    "question": "En 1982 en Californie, avec quel véhicule improvisé Larry Walters est-il monté jusqu'à 4 900 mètres d'altitude, perturbant le couloir aérien de Los Angeles ?",
+    "truth": "Une chaise de jardin attachée à 42 ballons météo gonflés à l'hélium",
+    "correctAnswer": "Une chaise de jardin attachée à 42 ballons météo gonflés à l'hélium",
+    "explanation": "Armé d'une carabine à plombs pour crever les ballons lors de la descente, de sandwichs et d'une radio CB, « Lawnchair Larry » est monté beaucoup plus vite que prévu avant de lâcher accidentellement ses lunettes et sa carabine.",
+    "aiBluffs": {
+      "farfelu": [
+        "Une baignoire en fonte équipée de quatre moteurs de tondeuse à gazon",
+        "Un lit à baldaquin tiré par douze cerfs-volants géants de plage",
+        "Un caddie de supermarché propulsé par des extincteurs à neige carbonique"
+      ],
+      "ruse": [
+        "Un planeur artisanal fabriqué avec des voiles de planche à voile",
+        "Un vélo de course muni d'une hélice en bois et d'ailes en toile",
+        "Un canot pneumatique suspendu sous un parachute ascensionnel"
+      ],
+      "manipulateur": [
+        "Une cabine téléphonique en aluminium accrochée à un ballon dirigeable",
+        "Un deltaplane motorisé assemblé avec deux turbines d'aspirateur industriel",
+        "Un hamac de parachutiste relié à 18 bouteilles d'air comprimé"
+      ]
+    },
+    "samplePlayerSuggestions": [
+      "Un vélo équipé d'ailes en toile",
+      "Un canot pneumatique sous un parachute",
+      "Une baignoire à hélice"
+    ]
+  },
+  {
+    "id": "q018",
+    "category": "Musique & Insolite",
+    "question": "En 1827 à Vienne, quelle invention le facteur d'instruments Johann Nepomuk Mälzel a-t-il présentée en tournée pendant des décennies en bluffant même Napoléon Bonaparte ?",
+    "truth": "Le Turc mécanique, un faux automate joueur d'échecs cachant un maître humain",
+    "correctAnswer": "Le Turc mécanique, un faux automate joueur d'échecs cachant un maître humain",
+    "explanation": "Construit par Wolfgang von Kempelen puis racheté par Mälzel (l'inventeur du métronome), ce prétendu automate dissimulait en réalité un joueur d'échecs de petite taille qui actionnait le bras du mannequin à la lueur d'une bougie.",
+    "aiBluffs": {
+      "farfelu": [
+        "Un clavecin hydraulique actionné par trois canards dressés",
+        "Une trompette acoustique capable d'imiter la voix de l'impératrice",
+        "Un violon automatique dont l'archet fonctionnait à la vapeur de café"
+      ],
+      "ruse": [
+        "Une boîte à musique géante composant des valses aléatoires avec des dés",
+        "Un orgue mécanique reproduisant le bruit d'un champ de bataille complet",
+        "Un buste parlant en cire relié à des soufflets de cuir"
+      ],
+      "manipulateur": [
+        "La sphère harmonique de Salzbourg, qui jouait sans aucun mécanisme visible",
+        "Un automate calligraphe capable d'écrire en quatre langues sous la dictée",
+        "Un métronome magnétique prétendant lire le pouls du chef d'orchestre"
+      ]
+    },
+    "samplePlayerSuggestions": [
+      "Un piano mécanique qui composait tout seul",
+      "Un buste en cire capable de parler",
+      "Un automate calligraphe"
+    ]
+  },
+  {
+    "id": "q019",
+    "category": "Botanique & Archéologie",
+    "question": "Quel record mondial détient « Mathusalem », un palmier dattier de Judée qui a poussé en Israël en 2005 ?",
+    "truth": "Il est né d'une graine vieille de 2 000 ans retrouvée dans les ruines de Massada",
+    "correctAnswer": "Il est né d'une graine vieille de 2 000 ans retrouvée dans les ruines de Massada",
+    "explanation": "Découverte lors de fouilles archéologiques dans la forteresse d'Hérode le Grand, cette graine datant du Ier siècle a germé en quelques semaines après avoir été hydratée par la botaniste Elaine Solowey.",
+    "aiBluffs": {
+      "farfelu": [
+        "Il pousse la tête en bas depuis le plafond d'une grotte souterraine",
+        "Ses dattes ont naturellement le goût de caramel au beurre salé",
+        "Il mesure seulement douze centimètres de haut malgré ses huit cents ans"
+      ],
+      "ruse": [
+        "Il survit sans une seule goutte d'eau de pluie depuis plus de trois siècles",
+        "Ses racines descendent à plus de 110 mètres de profondeur dans la roche",
+        "Il a survécu à trois éruptions volcaniques et un impact de météorite"
+      ],
+      "manipulateur": [
+        "Il produit sept variétés de fruits différents grâce à des greffes antiques",
+        "Son tronc pétrifié continue de fleurir une seule nuit tous les 14 ans",
+        "Il a été cloné à partir d'une feuille séchée conservée dans le tombeau de Toutânkhamon"
+      ]
+    },
+    "samplePlayerSuggestions": [
+      "Il survit sans eau depuis trois siècles",
+      "Ses racines descendent à 100 mètres de profondeur",
+      "Il a poussé à partir d'une feuille du tombeau de Toutânkhamon"
+    ]
+  },
+  {
+    "id": "q020",
+    "category": "Commerce & Histoire",
+    "question": "En 1889 à Kyoto au Japon, quel produit fabriquait exclusivement l'entreprise Nintendo lors de sa fondation par Fusajiro Yamauchi ?",
+    "truth": "Des cartes à jouer traditionnelles japonaises peintes à la main (Hanafuda)",
+    "correctAnswer": "Des cartes à jouer traditionnelles japonaises peintes à la main (Hanafuda)",
+    "explanation": "Fabriquées à partir d'écorce de mûrier et illustrées de fleurs des douze mois de l'année, ces cartes « Hanafuda » permettaient de contourner l'interdiction des cartes à jouer numérotées occidentales au Japon.",
+    "aiBluffs": {
+      "farfelu": [
+        "Des moustaches postiches pour les acteurs de théâtre Kabuki",
+        "Des parapluies en papier huilé qui changeaient de couleur sous la pluie",
+        "Des sabliers remplis de poudre de perles concassées"
+      ],
+      "ruse": [
+        "Des automates en bois de cèdre servant le thé aux invités",
+        "Des lanternes pliantes en soie pour les processions impériales",
+        "Des bouliers de calcul haute précision pour les marchands de riz"
+      ],
+      "manipulateur": [
+        "Des toupies métalliques de combat appelées Beigoma",
+        "Des boîtes à musique laquées importées pour la cour de l'Empereur Meiji",
+        "Des dominos en os de baleine gravés au pochoir"
+      ]
+    },
+    "samplePlayerSuggestions": [
+      "Des lanternes en soie peintes à la main",
+      "Des toupies en bois traditionnelles",
+      "Des bouliers pour les marchands de riz"
+    ]
+  }
+]

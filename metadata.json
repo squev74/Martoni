@@ -1,0 +1,6 @@
+{
+  "name": "Jeu de Bluff",
+  "description": "Jeu de bluff mobile-first en français où vous affrontez 3 personnalités d'IA autour de questions insolites vérifiées.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
