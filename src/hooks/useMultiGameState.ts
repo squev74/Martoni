@@ -272,9 +272,10 @@ export function useMultiGameState(roomCode: string, playerId: string) {
     audioManager.playSFX('question_pop');
   }, [room, playerId]);
 
-  // Check if all voted or timer expired -> Host calculates scores and transitions to REVEAL
+  // Check if all voted or timer expired -> Host calculates scores and transitions to REVEAL (run once per round)
   useEffect(() => {
     if (!room || !isHost || room.state !== 'VOTE' || !room.cards) return;
+    if (room.scoreBreakdowns && Object.keys(room.scoreBreakdowns).length > 0) return;
 
     const playersList = Object.values(room.players || {});
     const humanPlayers = playersList.filter((p) => !p.id.startsWith('ai_'));
@@ -396,7 +397,7 @@ export function useMultiGameState(roomCode: string, playerId: string) {
 
       processVotesAndReveal();
     }
-  }, [room?.votes, timeLeft, isHost, room?.state]);
+  }, [room?.votes, timeLeft, isHost, room?.state, room?.scoreBreakdowns]);
 
   const nextRoundOrFinish = useCallback(async () => {
     if (!room || !isHost) return;
@@ -408,7 +409,7 @@ export function useMultiGameState(roomCode: string, playerId: string) {
       const updated = {
         ...room,
         currentRound: nextRound,
-        currentQuestionIndex: (room.currentQuestionIndex || 0) + 1,
+        currentQuestionIndex: nextRound - 1,
         state: 'QUESTION' as const,
         question: undefined,
         submissions: undefined,

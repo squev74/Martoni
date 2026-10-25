@@ -238,6 +238,52 @@ export const MultiGameScreen: React.FC<MultiGameScreenProps> = ({
             })}
           </div>
 
+          {/* Round Score Breakdown */}
+          {room.scoreBreakdowns && (
+            <div className="rounded-3xl bg-slate-900 border border-slate-800 p-6 space-y-4">
+              <h3 className="text-lg font-bold text-white font-serif-display flex items-center gap-2">
+                <Award className="w-5 h-5 text-amber-400" />
+                <span>Comptabilisation des points de cette manche</span>
+              </h3>
+              <div className="space-y-2.5">
+                {Object.entries(room.scoreBreakdowns).map(([pId, breakdown]: [string, any]) => {
+                  const pName = getPlayerName(pId);
+                  const isMe = pId === playerId;
+                  return (
+                    <div
+                      key={pId}
+                      className={`p-4 rounded-2xl border flex items-center justify-between gap-3 ${
+                        isMe
+                          ? 'bg-amber-400/10 border-amber-400/40 text-amber-300'
+                          : 'bg-slate-950/60 border-slate-800 text-slate-200'
+                      }`}
+                    >
+                      <div className="space-y-1">
+                        <div className="font-bold text-sm text-white">
+                          {pName} {isMe && '(Vous)'}
+                        </div>
+                        <div className="text-xs text-slate-400 flex flex-wrap gap-2">
+                          {breakdown.truthPoints > 0 && (
+                            <span className="text-emerald-400">+{breakdown.truthPoints} pts (Vraie réponse)</span>
+                          )}
+                          {breakdown.bluffPoints > 0 && (
+                            <span className="text-amber-400">+{breakdown.bluffPoints} pts (Bluff réussi)</span>
+                          )}
+                          {breakdown.totalRoundPoints === 0 && (
+                            <span className="text-slate-500">0 pt cette manche</span>
+                          )}
+                        </div>
+                      </div>
+                      <div className="text-right shrink-0 font-mono font-black text-amber-400 text-lg">
+                        +{breakdown.totalRoundPoints}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
           {/* Host Controls */}
           {isHost ? (
             <button
