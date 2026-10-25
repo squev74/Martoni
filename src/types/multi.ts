@@ -1,3 +1,5 @@
+import { Question } from './game';
+
 export type RoomState = 'LOBBY' | 'QUESTION' | 'VOTE' | 'REVEAL' | 'ENDED';
 
 export interface MultiPlayer {
@@ -27,6 +29,7 @@ export interface Room {
   totalRounds: number;
   players: Record<string, MultiPlayer>;
   currentQuestionIndex: number;
+  questionsList?: Question[];
   question?: {
     id: string;
     category: string;

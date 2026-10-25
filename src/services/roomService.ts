@@ -2,6 +2,9 @@ import { doc, setDoc, getDoc, updateDoc, deleteDoc, onSnapshot } from 'firebase/
 import { db } from './firebase';
 import { Room, MultiPlayer, RoomState } from '../types/multi';
 import { cleanForFirestore } from '../utils/firestoreCleaner';
+import questionsData from '../data/questions.json';
+import { getRandomQuestions } from '../utils/questionManager';
+import { Question } from '../types/game';
 
 const CHANNEL_NAME = 'jeu_de_bluff_multi_sync';
 const broadcastChannel = typeof window !== 'undefined' && 'BroadcastChannel' in window ? new BroadcastChannel(CHANNEL_NAME) : null;
@@ -73,6 +76,9 @@ export async function createRoom(
     };
   }
 
+  const allQuestions = questionsData as Question[];
+  const roomQuestions = getRandomQuestions(4, allQuestions);
+
   const newRoom: Room = {
     code: roomCode,
     hostId: hostId,
@@ -83,6 +89,7 @@ export async function createRoom(
     totalRounds: 4,
     players,
     currentQuestionIndex: 0,
+    questionsList: roomQuestions,
     createdAt: Date.now(),
   };
 
