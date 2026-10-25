@@ -23,6 +23,13 @@ export const MultiGameScreen: React.FC<MultiGameScreenProps> = ({
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
   const [hasVoted, setHasVoted] = useState(false);
 
+  useEffect(() => {
+    setHasSubmitted(false);
+    setAnswerText('');
+    setHasVoted(false);
+    setSelectedCardId(null);
+  }, [room?.currentRound, room?.state]);
+
   if (loading || !room) {
     return (
       <div className="text-center py-16 space-y-3">
@@ -55,13 +62,6 @@ export const MultiGameScreen: React.FC<MultiGameScreenProps> = ({
     setSelectedCardId(cardId);
     setHasVoted(true);
   };
-
-  useEffect(() => {
-    setHasSubmitted(false);
-    setAnswerText('');
-    setHasVoted(false);
-    setSelectedCardId(null);
-  }, [room.currentRound, room.state]);
 
   const getPlayerName = (id: string) => room.players?.[id]?.name || id;
 
