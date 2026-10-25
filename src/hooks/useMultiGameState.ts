@@ -117,7 +117,7 @@ export function useMultiGameState(roomCode: string, playerId: string) {
     }
   }, [room?.state, isHost, room?.currentQuestionIndex]);
 
-  // AI auto-submission when question is set
+  // AI auto-submission when question is set (with spell-check & normalization)
   useEffect(() => {
     if (!room || room.state !== 'QUESTION' || !room.question) return;
     const submissions = room.submissions || {};
@@ -134,9 +134,11 @@ export function useMultiGameState(roomCode: string, playerId: string) {
         
         aiPlayers.forEach((ai) => {
           if (!aiSubMap[ai.id]) {
-            if (ai.id === 'ai-ruse') aiSubMap[ai.id] = aiRes.ruse;
-            else if (ai.id === 'ai-manipulateur') aiSubMap[ai.id] = aiRes.manipulateur;
-            else aiSubMap[ai.id] = aiRes.farfelu;
+            let rawAiAns = '';
+            if (ai.id === 'ai-ruse') rawAiAns = aiRes.ruse;
+            else if (ai.id === 'ai-manipulateur') rawAiAns = aiRes.manipulateur;
+            else rawAiAns = aiRes.farfelu;
+            aiSubMap[ai.id] = normalizeDisplayAnswer(rawAiAns);
           }
         });
 
@@ -149,22 +151,23 @@ export function useMultiGameState(roomCode: string, playerId: string) {
     }
   }, [room?.state, room?.question, room?.submissions]);
 
-  // Submit player answer (Step 2)
+  // Submit player answer (Step 2) with spell-check & normalization
   const submitAnswer = useCallback(async (text: string) => {
     if (!room || !text.trim()) return;
+    const polished = normalizeDisplayAnswer(text);
     const cleanCode = room.code;
     const roomRef = doc(db, 'rooms', cleanCode);
     try {
       await updateDoc(
         roomRef,
         cleanForFirestore({
-          [`submissions.${playerId}`]: text.trim(),
+          [`submissions.${playerId}`]: polished,
         })
       );
     } catch {
       const updated = { ...room };
       if (!updated.submissions) updated.submissions = {};
-      updated.submissions[playerId] = text.trim();
+      updated.submissions[playerId] = polished;
       await setDoc(roomRef, cleanForFirestore(updated));
     }
     audioManager.playSFX('question_pop');
