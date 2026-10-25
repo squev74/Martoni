@@ -117,6 +117,38 @@ export function useMultiGameState(roomCode: string, playerId: string) {
     }
   }, [room?.state, isHost, room?.currentQuestionIndex]);
 
+  // AI auto-submission when question is set
+  useEffect(() => {
+    if (!room || room.state !== 'QUESTION' || !room.question) return;
+    const submissions = room.submissions || {};
+    const playersList = Object.values(room.players || {});
+    const aiPlayers = playersList.filter((p) => p.id.startsWith('ai_'));
+
+    const needsAiSubmissions = aiPlayers.some((ai) => submissions[ai.id] === undefined);
+    if (needsAiSubmissions) {
+      const generateAiSubs = async () => {
+        const q = room.question!;
+        const officialTruth = q.truth;
+        const aiRes = await generateAiAnswers(q.question, officialTruth, 'Exemple');
+        const aiSubMap: Record<string, string> = { ...submissions };
+        
+        aiPlayers.forEach((ai) => {
+          if (!aiSubMap[ai.id]) {
+            if (ai.id === 'ai-ruse') aiSubMap[ai.id] = aiRes.ruse;
+            else if (ai.id === 'ai-manipulateur') aiSubMap[ai.id] = aiRes.manipulateur;
+            else aiSubMap[ai.id] = aiRes.farfelu;
+          }
+        });
+
+        const roomRef = doc(db, 'rooms', room.code);
+        await updateDoc(roomRef, cleanForFirestore({ submissions: aiSubMap })).catch(async () => {
+          await setDoc(roomRef, cleanForFirestore({ ...room, submissions: aiSubMap }), { merge: true });
+        });
+      };
+      generateAiSubs();
+    }
+  }, [room?.state, room?.question, room?.submissions]);
+
   // Submit player answer (Step 2)
   const submitAnswer = useCallback(async (text: string) => {
     if (!room || !text.trim()) return;
@@ -138,17 +170,23 @@ export function useMultiGameState(roomCode: string, playerId: string) {
     audioManager.playSFX('question_pop');
   }, [room, playerId]);
 
-  // Check if all humans submitted -> Generate cards & switches to VOTE (run once)
+  // Check if all submitted or timer expired (1 minute) -> Generate cards & switch to VOTE
   useEffect(() => {
     if (!room || room.state !== 'QUESTION' || !room.question) return;
     if (room.cards && Object.keys(room.cards).length > 0) return;
 
     const playersList = Object.values(room.players || {});
-    const humanPlayers = playersList.filter((p) => !p.id.startsWith('ai_'));
     const submissions = room.submissions || {};
-    const allSubmitted = humanPlayers.every((hp) => submissions[hp.id] !== undefined);
+    const allSubmitted = playersList.every((p) => submissions[p.id] !== undefined);
 
     if (allSubmitted || timeLeft === 0) {
+      const finalSubmissions = { ...submissions };
+      playersList.forEach((p) => {
+        if (!finalSubmissions[p.id]) {
+          finalSubmissions[p.id] = 'Proposition mystère';
+        }
+      });
+
       const processSubmissionsAndAdvance = async () => {
         const q = room.question!;
         const officialTruth = q.truth;
@@ -163,10 +201,9 @@ export function useMultiGameState(roomCode: string, playerId: string) {
           authorIds: [],
         };
 
-        for (const hp of humanPlayers) {
-          const rawAns = submissions[hp.id] || 'Proposition mystère';
-          const aiRes = await generateAiAnswers(q.question, officialTruth, rawAns);
-          const correctedText = normalizeDisplayAnswer(aiRes.userCorrected);
+        for (const p of playersList) {
+          const rawAns = finalSubmissions[p.id] || 'Proposition mystère';
+          const correctedText = normalizeDisplayAnswer(rawAns);
 
           let matchedCardKey: string | null = null;
           for (const [key, card] of Object.entries(mergedCards)) {
@@ -179,51 +216,13 @@ export function useMultiGameState(roomCode: string, playerId: string) {
           if (matchedCardKey) {
             const card = mergedCards[matchedCardKey];
             if (!card.authorIds) card.authorIds = [];
-            if (!card.authorIds.includes(hp.id)) card.authorIds.push(hp.id);
-            if (!card.isTruth && hp.id === playerId) {
-              card.text = correctedText;
-            }
+            if (!card.authorIds.includes(p.id)) card.authorIds.push(p.id);
           } else {
-            const newKey = `card_hum_${hp.id}`;
+            const newKey = `card_${p.id}`;
             mergedCards[newKey] = {
               id: newKey,
               text: correctedText,
-              authorIds: [hp.id],
-              isTruth: false,
-            };
-          }
-        }
-
-        const aiCount = room.aiCount ?? 3;
-        const sampleAiResponses = await generateAiAnswers(q.question, officialTruth, 'Exemple');
-        const aiPersonas = [
-          { id: 'ai-ruse', text: sampleAiResponses.ruse },
-          { id: 'ai-manipulateur', text: sampleAiResponses.manipulateur },
-          { id: 'ai-farfelu', text: sampleAiResponses.farfelu },
-        ];
-
-        for (let i = 0; i < Math.min(aiCount, aiPersonas.length); i++) {
-          const ai = aiPersonas[i];
-          const correctedAiText = normalizeDisplayAnswer(ai.text);
-
-          let matchedCardKey: string | null = null;
-          for (const [key, card] of Object.entries(mergedCards)) {
-            if (areAnswersSimilar(card.text, correctedAiText)) {
-              matchedCardKey = key;
-              break;
-            }
-          }
-
-          if (matchedCardKey) {
-            const card = mergedCards[matchedCardKey];
-            if (!card.authorIds) card.authorIds = [];
-            if (!card.authorIds.includes(ai.id)) card.authorIds.push(ai.id);
-          } else {
-            const newKey = `card_${ai.id}`;
-            mergedCards[newKey] = {
-              id: newKey,
-              text: correctedAiText,
-              authorIds: [ai.id],
+              authorIds: [p.id],
               isTruth: false,
             };
           }
@@ -240,12 +239,13 @@ export function useMultiGameState(roomCode: string, playerId: string) {
         await updateDoc(
           roomRef,
           cleanForFirestore({
+            submissions: finalSubmissions,
             cards: finalCardsMap,
             state: 'VOTE',
           })
         ).catch(async () => {
-          const updated = { ...room, cards: finalCardsMap, state: 'VOTE' as const };
-          await setDoc(roomRef, cleanForFirestore(updated));
+          const updated = { ...room, submissions: finalSubmissions, cards: finalCardsMap, state: 'VOTE' as const };
+          await setDoc(roomRef, cleanForFirestore(updated), { merge: true });
         });
       };
 
@@ -274,50 +274,31 @@ export function useMultiGameState(roomCode: string, playerId: string) {
     audioManager.playSFX('question_pop');
   }, [room, playerId]);
 
-  // Check if all voted -> Calculate scores and transition to REVEAL (run once per round, strictly when all have voted)
+  // Check if all voted or timer expired (1 minute) -> Calculate scores and transition to REVEAL
   useEffect(() => {
     if (!room || room.state !== 'VOTE' || !room.cards) return;
     if (room.scoreBreakdowns && Object.keys(room.scoreBreakdowns).length > 0) return;
 
     const playersList = Object.values(room.players || {});
-    const humanPlayers = playersList.filter((p) => !p.id.startsWith('ai_'));
     const votes = room.votes || {};
-    const allVoted = humanPlayers.every((hp) => votes[hp.id] !== undefined);
+    const allVoted = playersList.every((p) => votes[p.id] !== undefined);
 
-    if (allVoted) {
-      const processVotesAndReveal = async () => {
-        const cardsMap = room.cards || {};
-        const cardsList = Object.values(cardsMap);
-        const truthCard = cardsList.find((c) => c.isTruth);
+    if (allVoted || timeLeft === 0) {
+      const completeVotes = { ...votes };
+      const cardsList = Object.values(room.cards || {});
+      const truthCard = cardsList.find((c) => c.isTruth);
 
-        const completeVotes = { ...votes };
-        const aiCount = room.aiCount ?? 3;
-        const aiBots = [
-          { id: 'ai-ruse', prob: 0.6 },
-          { id: 'ai-manipulateur', prob: 0.4 },
-          { id: 'ai-farfelu', prob: 0.2 },
-        ].slice(0, aiCount);
-
-        aiBots.forEach((ai) => {
-          if (!completeVotes[ai.id]) {
-            const roll = Math.random();
-            const votesTruth = roll < ai.prob;
-            if (votesTruth && truthCard && !(truthCard.authorIds || []).includes(ai.id)) {
-              completeVotes[ai.id] = truthCard.id;
-            } else {
-              const eligible = cardsList.filter(
-                (c) => !c.isTruth && !(c.authorIds || []).includes(ai.id)
-              );
-              if (eligible.length > 0) {
-                const chosen = eligible[Math.floor(Math.random() * eligible.length)];
-                completeVotes[ai.id] = chosen.id;
-              } else if (truthCard) {
-                completeVotes[ai.id] = truthCard.id;
-              }
-            }
+      playersList.forEach((p) => {
+        if (!completeVotes[p.id]) {
+          if (truthCard) {
+            completeVotes[p.id] = truthCard.id;
+          } else if (cardsList.length > 0) {
+            completeVotes[p.id] = cardsList[0].id;
           }
-        });
+        }
+      });
 
+      const processVotesAndReveal = async () => {
         const updatedCardsMap: Record<string, MultiAnswerCard> = {};
         cardsList.forEach((c) => {
           const cardVoters: Record<string, boolean> = {};
@@ -333,7 +314,6 @@ export function useMultiGameState(roomCode: string, playerId: string) {
         });
 
         const scoreBreakdowns: Record<string, any> = {};
-        const playerUpdates: Record<string, number> = {};
         const newPlayers = { ...room.players };
 
         playersList.forEach((p) => {
@@ -369,7 +349,6 @@ export function useMultiGameState(roomCode: string, playerId: string) {
           if (newPlayers[p.id]) {
             newPlayers[p.id].score = newScore;
           }
-          playerUpdates[`players.${p.id}.score`] = newScore;
         });
 
         const roomRef = doc(db, 'rooms', room.code);
@@ -391,7 +370,7 @@ export function useMultiGameState(roomCode: string, playerId: string) {
             state: 'REVEAL' as const,
             players: newPlayers,
           };
-          await setDoc(roomRef, cleanForFirestore(updated));
+          await setDoc(roomRef, cleanForFirestore(updated), { merge: true });
         });
 
         audioManager.playSFX('correct_answer');
@@ -399,7 +378,7 @@ export function useMultiGameState(roomCode: string, playerId: string) {
 
       processVotesAndReveal();
     }
-  }, [room?.votes, room?.state, room?.cards, room?.scoreBreakdowns]);
+  }, [room?.votes, timeLeft, room?.state, room?.cards, room?.scoreBreakdowns]);
 
   const nextRoundOrFinish = useCallback(async () => {
     if (!room || !isHost) return;
