@@ -98,13 +98,20 @@ export function useMultiGameState(roomCode: string, playerId: string) {
       };
 
       const roomRef = doc(db, 'rooms', room.code);
-      updateDoc(roomRef, {
-        question: questionPayload,
-        submissions: {},
-        cards: {},
-        votes: {},
-        scoreBreakdowns: {},
-      }).catch(() => {});
+      setDoc(
+        roomRef,
+        {
+          ...room,
+          question: questionPayload,
+          submissions: {},
+          cards: {},
+          votes: {},
+          scoreBreakdowns: {},
+        },
+        { merge: true }
+      ).catch((err) => {
+        console.error('Error setting room question in Firestore:', err);
+      });
     }
   }, [room?.state, isHost, room?.currentQuestionIndex]);
 
@@ -385,36 +392,25 @@ export function useMultiGameState(roomCode: string, playerId: string) {
 
     const roomRef = doc(db, 'rooms', room.code);
     if (nextRound <= totalRounds) {
-      await updateDoc(roomRef, {
+      const updated = {
+        ...room,
         currentRound: nextRound,
         currentQuestionIndex: (room.currentQuestionIndex || 0) + 1,
-        state: 'QUESTION',
-        question: null,
-        submissions: null,
-        cards: null,
-        votes: null,
-        scoreBreakdowns: null,
-      }).catch(async () => {
-        const updated = {
-          ...room,
-          currentRound: nextRound,
-          currentQuestionIndex: (room.currentQuestionIndex || 0) + 1,
-          state: 'QUESTION' as const,
-          question: undefined,
-          submissions: undefined,
-          cards: undefined,
-          votes: undefined,
-          scoreBreakdowns: undefined,
-        };
-        await setDoc(roomRef, updated);
+        state: 'QUESTION' as const,
+        question: undefined,
+        submissions: undefined,
+        cards: undefined,
+        votes: undefined,
+        scoreBreakdowns: undefined,
+      };
+      await setDoc(roomRef, updated, { merge: true }).catch((err) => {
+        console.error('Error advancing round in Firestore:', err);
       });
       audioManager.playSFX('question_pop');
     } else {
-      await updateDoc(roomRef, {
-        state: 'ENDED',
-      }).catch(async () => {
-        const updated = { ...room, state: 'ENDED' as const };
-        await setDoc(roomRef, updated);
+      const updated = { ...room, state: 'ENDED' as const };
+      await setDoc(roomRef, updated, { merge: true }).catch((err) => {
+        console.error('Error ending game in Firestore:', err);
       });
       audioManager.playSFX('game_over');
     }
