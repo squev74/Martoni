@@ -52,6 +52,27 @@ export async function createRoom(
     isReady: true,
   };
 
+  const players: Record<string, MultiPlayer> = {
+    [hostId]: hostPlayer,
+  };
+
+  const aiPersonas = [
+    { id: 'ai-ruse', name: '🤖 IA Rusé' },
+    { id: 'ai-manipulateur', name: '🤖 IA Manipulateur' },
+    { id: 'ai-farfelu', name: '🤖 IA Farfelu' },
+  ];
+
+  for (let i = 0; i < Math.min(aiCount, aiPersonas.length); i++) {
+    const ai = aiPersonas[i];
+    players[ai.id] = {
+      id: ai.id,
+      name: ai.name,
+      isHost: false,
+      score: 0,
+      isReady: true,
+    };
+  }
+
   const newRoom: Room = {
     code: roomCode,
     hostId: hostId,
@@ -60,9 +81,7 @@ export async function createRoom(
     aiCount: aiCount,
     currentRound: 1,
     totalRounds: 4,
-    players: {
-      [hostId]: hostPlayer,
-    },
+    players,
     currentQuestionIndex: 0,
     createdAt: Date.now(),
   };

@@ -137,9 +137,10 @@ export function useMultiGameState(roomCode: string, playerId: string) {
     audioManager.playSFX('question_pop');
   }, [room, playerId]);
 
-  // Check if all humans submitted or timer expired -> Host generates cards & switches to VOTE
+  // Check if all humans submitted or timer expired -> Generate cards & switches to VOTE (run once)
   useEffect(() => {
-    if (!room || !isHost || room.state !== 'QUESTION' || !room.question) return;
+    if (!room || room.state !== 'QUESTION' || !room.question) return;
+    if (room.cards && Object.keys(room.cards).length > 0) return;
 
     const playersList = Object.values(room.players || {});
     const humanPlayers = playersList.filter((p) => !p.id.startsWith('ai_'));
@@ -249,7 +250,7 @@ export function useMultiGameState(roomCode: string, playerId: string) {
 
       processSubmissionsAndAdvance();
     }
-  }, [room?.submissions, timeLeft, isHost, room?.state]);
+  }, [room?.submissions, timeLeft, room?.state, room?.cards]);
 
   // Submit vote
   const submitVote = useCallback(async (cardId: string) => {
@@ -272,9 +273,9 @@ export function useMultiGameState(roomCode: string, playerId: string) {
     audioManager.playSFX('question_pop');
   }, [room, playerId]);
 
-  // Check if all voted or timer expired -> Host calculates scores and transitions to REVEAL (run once per round)
+  // Check if all voted or timer expired -> Calculate scores and transition to REVEAL (run once per round by any client)
   useEffect(() => {
-    if (!room || !isHost || room.state !== 'VOTE' || !room.cards) return;
+    if (!room || room.state !== 'VOTE' || !room.cards) return;
     if (room.scoreBreakdowns && Object.keys(room.scoreBreakdowns).length > 0) return;
 
     const playersList = Object.values(room.players || {});
@@ -397,7 +398,7 @@ export function useMultiGameState(roomCode: string, playerId: string) {
 
       processVotesAndReveal();
     }
-  }, [room?.votes, timeLeft, isHost, room?.state, room?.scoreBreakdowns]);
+  }, [room?.votes, timeLeft, room?.state, room?.cards, room?.scoreBreakdowns]);
 
   const nextRoundOrFinish = useCallback(async () => {
     if (!room || !isHost) return;
