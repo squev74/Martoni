@@ -7,6 +7,7 @@ import { Question } from '../types/game';
 import { generateAiAnswers } from '../services/geminiService';
 import { areAnswersSimilar, normalizeDisplayAnswer } from '../utils/answerMatcher';
 import { audioManager } from '../utils/audioManager';
+import { cleanForFirestore } from '../utils/firestoreCleaner';
 
 function shuffleArray<T>(items: T[]): T[] {
   const copy = [...items];
@@ -100,14 +101,14 @@ export function useMultiGameState(roomCode: string, playerId: string) {
       const roomRef = doc(db, 'rooms', room.code);
       setDoc(
         roomRef,
-        {
+        cleanForFirestore({
           ...room,
           question: questionPayload,
           submissions: {},
           cards: {},
           votes: {},
           scoreBreakdowns: {},
-        },
+        }),
         { merge: true }
       ).catch((err) => {
         console.error('Error setting room question in Firestore:', err);
@@ -121,14 +122,17 @@ export function useMultiGameState(roomCode: string, playerId: string) {
     const cleanCode = room.code;
     const roomRef = doc(db, 'rooms', cleanCode);
     try {
-      await updateDoc(roomRef, {
-        [`submissions.${playerId}`]: text.trim(),
-      });
+      await updateDoc(
+        roomRef,
+        cleanForFirestore({
+          [`submissions.${playerId}`]: text.trim(),
+        })
+      );
     } catch {
       const updated = { ...room };
       if (!updated.submissions) updated.submissions = {};
       updated.submissions[playerId] = text.trim();
-      await setDoc(roomRef, updated);
+      await setDoc(roomRef, cleanForFirestore(updated));
     }
     audioManager.playSFX('question_pop');
   }, [room, playerId]);
@@ -231,12 +235,15 @@ export function useMultiGameState(roomCode: string, playerId: string) {
         });
 
         const roomRef = doc(db, 'rooms', room.code);
-        await updateDoc(roomRef, {
-          cards: finalCardsMap,
-          state: 'VOTE',
-        }).catch(async () => {
+        await updateDoc(
+          roomRef,
+          cleanForFirestore({
+            cards: finalCardsMap,
+            state: 'VOTE',
+          })
+        ).catch(async () => {
           const updated = { ...room, cards: finalCardsMap, state: 'VOTE' as const };
-          await setDoc(roomRef, updated);
+          await setDoc(roomRef, cleanForFirestore(updated));
         });
       };
 
@@ -250,14 +257,17 @@ export function useMultiGameState(roomCode: string, playerId: string) {
     const cleanCode = room.code;
     const roomRef = doc(db, 'rooms', cleanCode);
     try {
-      await updateDoc(roomRef, {
-        [`votes.${playerId}`]: cardId,
-      });
+      await updateDoc(
+        roomRef,
+        cleanForFirestore({
+          [`votes.${playerId}`]: cardId,
+        })
+      );
     } catch {
       const updated = { ...room };
       if (!updated.votes) updated.votes = {};
       updated.votes[playerId] = cardId;
-      await setDoc(roomRef, updated);
+      await setDoc(roomRef, cleanForFirestore(updated));
     }
     audioManager.playSFX('question_pop');
   }, [room, playerId]);
@@ -360,13 +370,16 @@ export function useMultiGameState(roomCode: string, playerId: string) {
         });
 
         const roomRef = doc(db, 'rooms', room.code);
-        await updateDoc(roomRef, {
-          votes: completeVotes,
-          cards: updatedCardsMap,
-          scoreBreakdowns,
-          state: 'REVEAL',
-          players: newPlayers,
-        }).catch(async () => {
+        await updateDoc(
+          roomRef,
+          cleanForFirestore({
+            votes: completeVotes,
+            cards: updatedCardsMap,
+            scoreBreakdowns,
+            state: 'REVEAL',
+            players: newPlayers,
+          })
+        ).catch(async () => {
           const updated = {
             ...room,
             votes: completeVotes,
@@ -375,7 +388,7 @@ export function useMultiGameState(roomCode: string, playerId: string) {
             state: 'REVEAL' as const,
             players: newPlayers,
           };
-          await setDoc(roomRef, updated);
+          await setDoc(roomRef, cleanForFirestore(updated));
         });
 
         audioManager.playSFX('correct_answer');
@@ -403,13 +416,13 @@ export function useMultiGameState(roomCode: string, playerId: string) {
         votes: undefined,
         scoreBreakdowns: undefined,
       };
-      await setDoc(roomRef, updated, { merge: true }).catch((err) => {
+      await setDoc(roomRef, cleanForFirestore(updated), { merge: true }).catch((err) => {
         console.error('Error advancing round in Firestore:', err);
       });
       audioManager.playSFX('question_pop');
     } else {
       const updated = { ...room, state: 'ENDED' as const };
-      await setDoc(roomRef, updated, { merge: true }).catch((err) => {
+      await setDoc(roomRef, cleanForFirestore(updated), { merge: true }).catch((err) => {
         console.error('Error ending game in Firestore:', err);
       });
       audioManager.playSFX('game_over');

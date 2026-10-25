@@ -1,6 +1,7 @@
 import { doc, setDoc, getDoc, updateDoc, deleteDoc, onSnapshot } from 'firebase/firestore';
 import { db } from './firebase';
 import { Room, MultiPlayer, RoomState } from '../types/multi';
+import { cleanForFirestore } from '../utils/firestoreCleaner';
 
 const CHANNEL_NAME = 'jeu_de_bluff_multi_sync';
 const broadcastChannel = typeof window !== 'undefined' && 'BroadcastChannel' in window ? new BroadcastChannel(CHANNEL_NAME) : null;
@@ -68,7 +69,7 @@ export async function createRoom(
 
   try {
     const roomRef = doc(db, 'rooms', roomCode);
-    await setDoc(roomRef, newRoom);
+    await setDoc(roomRef, cleanForFirestore(newRoom));
   } catch (err) {
     console.error('Error creating room in Firestore:', err);
   }
@@ -125,7 +126,7 @@ export async function joinRoom(
 
   try {
     const roomRef = doc(db, 'rooms', cleanCode);
-    await setDoc(roomRef, room);
+    await setDoc(roomRef, cleanForFirestore(room));
   } catch (err) {
     console.error('Error updating room in Firestore during join:', err);
   }
@@ -168,7 +169,7 @@ export async function updateRoomState(roomCode: string, state: RoomState): Promi
 
     try {
       const roomRef = doc(db, 'rooms', cleanCode);
-      await setDoc(roomRef, room);
+      await setDoc(roomRef, cleanForFirestore(room));
     } catch (err) {
       console.error('Error updating room state in Firestore:', err);
     }
@@ -196,7 +197,7 @@ export async function leaveRoom(roomCode: string, playerId: string): Promise<voi
     saveLocalRoom(room);
     try {
       const roomRef = doc(db, 'rooms', cleanCode);
-      await setDoc(roomRef, room);
+      await setDoc(roomRef, cleanForFirestore(room));
     } catch (err) {
       console.error('Error leaving room in Firestore:', err);
     }
