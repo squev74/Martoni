@@ -68,12 +68,9 @@ export async function createRoom(
 
   try {
     const roomRef = doc(db, 'rooms', roomCode);
-    await Promise.race([
-      setDoc(roomRef, newRoom),
-      new Promise((_, reject) => setTimeout(() => reject(new Error('Firebase timeout')), 1500)),
-    ]);
-  } catch {
-    // Fallback
+    await setDoc(roomRef, newRoom);
+  } catch (err) {
+    console.error('Error creating room in Firestore:', err);
   }
 
   saveLocalRoom(newRoom);
@@ -89,14 +86,13 @@ export async function joinRoom(
 
   try {
     const roomRef = doc(db, 'rooms', cleanCode);
-    const snap = await Promise.race([
-      getDoc(roomRef),
-      new Promise((_, reject) => setTimeout(() => reject(new Error('Firebase timeout')), 1500)),
-    ]) as any;
+    const snap = await getDoc(roomRef);
     if (snap && snap.exists()) {
       room = snap.data() as Room;
     }
-  } catch {}
+  } catch (err) {
+    console.error('Error fetching room from Firestore:', err);
+  }
 
   if (!room) {
     const localRooms = getLocalRooms();
@@ -129,11 +125,10 @@ export async function joinRoom(
 
   try {
     const roomRef = doc(db, 'rooms', cleanCode);
-    await Promise.race([
-      setDoc(roomRef, room),
-      new Promise((_, reject) => setTimeout(() => reject(new Error('Firebase timeout')), 1500)),
-    ]);
-  } catch {}
+    await setDoc(roomRef, room);
+  } catch (err) {
+    console.error('Error updating room in Firestore during join:', err);
+  }
 
   saveLocalRoom(room);
   return { playerId, room };
@@ -145,10 +140,7 @@ export async function updateRoomState(roomCode: string, state: RoomState): Promi
   let room: Room | null = null;
   try {
     const roomRef = doc(db, 'rooms', cleanCode);
-    const snap = await Promise.race([
-      getDoc(roomRef),
-      new Promise((_, reject) => setTimeout(() => reject(new Error('Firebase timeout')), 1500)),
-    ]) as any;
+    const snap = await getDoc(roomRef);
     if (snap && snap.exists()) room = snap.data() as Room;
   } catch {}
 
@@ -176,11 +168,10 @@ export async function updateRoomState(roomCode: string, state: RoomState): Promi
 
     try {
       const roomRef = doc(db, 'rooms', cleanCode);
-      await Promise.race([
-        setDoc(roomRef, room),
-        new Promise((_, reject) => setTimeout(() => reject(new Error('Firebase timeout')), 1500)),
-      ]);
-    } catch {}
+      await setDoc(roomRef, room);
+    } catch (err) {
+      console.error('Error updating room state in Firestore:', err);
+    }
 
     saveLocalRoom(room);
   }
@@ -188,14 +179,27 @@ export async function updateRoomState(roomCode: string, state: RoomState): Promi
 
 export async function leaveRoom(roomCode: string, playerId: string): Promise<void> {
   const cleanCode = roomCode.trim().toUpperCase();
-  const localRooms = getLocalRooms();
-  if (localRooms[cleanCode] && localRooms[cleanCode].players) {
-    delete localRooms[cleanCode].players[playerId];
-    saveLocalRoom(localRooms[cleanCode]);
+  let room: Room | null = null;
+  try {
+    const roomRef = doc(db, 'rooms', cleanCode);
+    const snap = await getDoc(roomRef);
+    if (snap && snap.exists()) room = snap.data() as Room;
+  } catch {}
+
+  if (!room) {
+    const localRooms = getLocalRooms();
+    room = localRooms[cleanCode] || null;
+  }
+
+  if (room && room.players) {
+    delete room.players[playerId];
+    saveLocalRoom(room);
     try {
       const roomRef = doc(db, 'rooms', cleanCode);
-      await setDoc(roomRef, localRooms[cleanCode]);
-    } catch {}
+      await setDoc(roomRef, room);
+    } catch (err) {
+      console.error('Error leaving room in Firestore:', err);
+    }
   }
 }
 
@@ -205,11 +209,6 @@ export function subscribeToRoom(
 ): () => void {
   const cleanCode = roomCode.trim().toUpperCase();
   const roomRef = doc(db, 'rooms', cleanCode);
-
-  const localRooms = getLocalRooms();
-  if (localRooms[cleanCode]) {
-    callback(localRooms[cleanCode]);
-  }
 
   const unsubscribeFirebase = onSnapshot(
     roomRef,
@@ -223,7 +222,8 @@ export function subscribeToRoom(
         callback(local[cleanCode] || null);
       }
     },
-    () => {
+    (err) => {
+      console.error('Firestore subscription error:', err);
       const rooms = getLocalRooms();
       callback(rooms[cleanCode] || null);
     }

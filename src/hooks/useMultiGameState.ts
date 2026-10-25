@@ -1,12 +1,12 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { doc, setDoc, getDoc, updateDoc, onSnapshot } from 'firebase/firestore';
-import { db } from '@/src/services/firebase';
-import { Room, MultiAnswerCard, MultiPlayer } from '@/src/types/multi';
-import questionsData from '@/src/data/questions.json';
-import { Question } from '@/src/types/game';
-import { generateAiAnswers } from '@/src/services/geminiService';
-import { areAnswersSimilar, normalizeDisplayAnswer } from '@/src/utils/answerMatcher';
-import { audioManager } from '@/src/utils/audioManager';
+import { db } from '../services/firebase';
+import { Room, MultiAnswerCard, MultiPlayer } from '../types/multi';
+import questionsData from '../data/questions.json';
+import { Question } from '../types/game';
+import { generateAiAnswers } from '../services/geminiService';
+import { areAnswersSimilar, normalizeDisplayAnswer } from '../utils/answerMatcher';
+import { audioManager } from '../utils/audioManager';
 
 function shuffleArray<T>(items: T[]): T[] {
   const copy = [...items];
