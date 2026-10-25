@@ -122,7 +122,7 @@ export function useMultiGameState(roomCode: string, playerId: string) {
     if (!room || room.state !== 'QUESTION' || !room.question) return;
     const submissions = room.submissions || {};
     const playersList = Object.values(room.players || {});
-    const aiPlayers = playersList.filter((p) => p.id.startsWith('ai_'));
+    const aiPlayers = playersList.filter((p) => p.id.startsWith('ai-'));
 
     const needsAiSubmissions = aiPlayers.some((ai) => submissions[ai.id] === undefined);
     if (needsAiSubmissions) {
@@ -252,6 +252,56 @@ export function useMultiGameState(roomCode: string, playerId: string) {
       processSubmissionsAndAdvance();
     }
   }, [room?.submissions, timeLeft, room?.state, room?.cards]);
+
+  // AI auto-voting when state is VOTE
+  useEffect(() => {
+    if (!room || room.state !== 'VOTE' || !room.cards) return;
+    const votes = room.votes || {};
+    const playersList = Object.values(room.players || {});
+    const aiPlayers = playersList.filter((p) => p.id.startsWith('ai-'));
+
+    const needsAiVotes = aiPlayers.some((ai) => votes[ai.id] === undefined);
+    if (needsAiVotes) {
+      const generateAiVotes = async () => {
+        const cardsList = Object.values(room.cards || {});
+        const truthCard = cardsList.find((c) => c.isTruth);
+        const newVotes = { ...votes };
+
+        aiPlayers.forEach((ai) => {
+          if (!newVotes[ai.id]) {
+            const roll = Math.random();
+            let prob = 0.4;
+            if (ai.id === 'ai-ruse') prob = 0.6;
+            else if (ai.id === 'ai-manipulateur') prob = 0.4;
+            else if (ai.id === 'ai-farfelu') prob = 0.2;
+
+            const votesTruth = roll < prob;
+            if (votesTruth && truthCard && !(truthCard.authorIds || []).includes(ai.id)) {
+              newVotes[ai.id] = truthCard.id;
+            } else {
+              const eligible = cardsList.filter(
+                (c) => !c.isTruth && !(c.authorIds || []).includes(ai.id)
+              );
+              if (eligible.length > 0) {
+                const chosen = eligible[Math.floor(Math.random() * eligible.length)];
+                newVotes[ai.id] = chosen.id;
+              } else if (truthCard) {
+                newVotes[ai.id] = truthCard.id;
+              } else if (cardsList.length > 0) {
+                newVotes[ai.id] = cardsList[0].id;
+              }
+            }
+          }
+        });
+
+        const roomRef = doc(db, 'rooms', room.code);
+        await updateDoc(roomRef, cleanForFirestore({ votes: newVotes })).catch(async () => {
+          await setDoc(roomRef, cleanForFirestore({ ...room, votes: newVotes }), { merge: true });
+        });
+      };
+      generateAiVotes();
+    }
+  }, [room?.state, room?.cards, room?.votes]);
 
   // Submit vote
   const submitVote = useCallback(async (cardId: string) => {
