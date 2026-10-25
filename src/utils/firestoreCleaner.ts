@@ -8,6 +8,8 @@ export function cleanForFirestore<T>(data: T): T {
   for (const [key, value] of Object.entries(data)) {
     if (value !== undefined) {
       cleaned[key] = cleanForFirestore(value);
+    } else {
+      cleaned[key] = null;
     }
   }
   return cleaned as T;

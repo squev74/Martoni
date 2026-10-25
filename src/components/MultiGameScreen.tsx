@@ -226,11 +226,21 @@ export const MultiGameScreen: React.FC<MultiGameScreenProps> = ({
                   {voterIds.length > 0 && (
                     <div className="mt-3 pt-3 border-t border-slate-800 flex flex-wrap gap-1.5 items-center text-xs">
                       <span className="text-slate-400">Votants :</span>
-                      {voterIds.map((vId) => (
-                        <span key={vId} className="px-2 py-0.5 rounded-lg bg-slate-950 border border-slate-700 text-slate-200">
-                          {getPlayerName(vId)}
-                        </span>
-                      ))}
+                      {voterIds.map((vId) => {
+                        const isMe = vId === playerId;
+                        return (
+                          <span
+                            key={vId}
+                            className={`px-2.5 py-1 rounded-xl border ${
+                              isMe
+                                ? 'bg-amber-400/20 border-amber-400 text-amber-300 font-bold'
+                                : 'bg-slate-950 border-slate-700 text-slate-200'
+                            }`}
+                          >
+                            {getPlayerName(vId)} {isMe && '(Votre vote)'}
+                          </span>
+                        );
+                      })}
                     </div>
                   )}
                 </div>
