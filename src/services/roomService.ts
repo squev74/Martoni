@@ -134,6 +134,11 @@ export async function joinRoom(
     return { error: 'La partie a déjà commencé dans ce salon.' };
   }
 
+  if (!room.players) room.players = {};
+  if (Object.keys(room.players).length >= 10) {
+    return { error: 'Le salon est complet (maximum 10 joueurs).' };
+  }
+
   const playerId = 'p_' + Math.random().toString(36).substring(2, 9);
   const newPlayer: MultiPlayer = {
     id: playerId,
@@ -143,7 +148,6 @@ export async function joinRoom(
     isReady: false,
   };
 
-  if (!room.players) room.players = {};
   room.players[playerId] = newPlayer;
 
   if (room.state === 'ENDED') {
@@ -224,9 +228,7 @@ export async function leaveRoom(roomCode: string, playerId: string): Promise<voi
     try {
       const roomRef = doc(db, 'rooms', cleanCode);
       await setDoc(roomRef, cleanForFirestore(room));
-    } catch (err) {
-      console.error('Error leaving room in Firestore:', err);
-    }
+    } catch {}
   }
 }
 
